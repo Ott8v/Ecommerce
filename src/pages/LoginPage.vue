@@ -81,30 +81,50 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 // import { useQuasar, QSpinnerGears } from "quasar";
-// import { userStore } from "stores/user.js";
+import { userStore } from "stores/user.js";
 // import { useRouter } from "vue-router";
 // import { onBeforeMount } from "vue";
 
 let login = ref(true);
 let email = ref("");
 let password = ref("");
+const store = userStore();
 
-function Login() {
-  const auth = getAuth();
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log(user);
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(error);
-    });
+async function Login() {
+  try {
+    const auth = getAuth();
+    const db = getFirestore();
+    const user = await signInWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+    const uid = user.user.uid;
+    store.logIn();
+    /*TODO: TAKE USER INFO
+    
+    */
+    /*TODO: CHECK IF USER.UID IS ADMIN OR USER
+    
+    store.giveRole();
+    */
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log(docSnap.data());
+    } else {
+      console.log("No such document!");
+    }
+
+    console.log(uid);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function Signup() {
