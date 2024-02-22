@@ -44,7 +44,10 @@ const stringChange = computed(() => {
   return store.loginStatus ? "Account" : "Login";
 });
 
-const doNotShow = computed(() => store.loginStatus);
+const doNotShow = computed(() => {
+  console.log(store.loginStatus);
+  return store.loginStatus;
+});
 
 const goLogin = () => {
   if (!store.loginStatus) {
