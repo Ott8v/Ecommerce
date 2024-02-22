@@ -7,17 +7,22 @@ export const userStore = defineStore(
     let userInfo = ref({});
     let isLogged = ref(false);
     let role = ref("");
-    const loginStatus = computed(() => isLogged.value);
+
+    const giveInfo = (obj) => {
+      userInfo.value = obj;
+    };
     const logIn = () => {
       isLogged.value = true;
     };
     const logOut = () => {
       isLogged.value = false;
     };
-
     const giveRole = (value) => {
       role.value = value;
     };
+
+    const loginStatus = computed(() => isLogged.value);
+    const getInfo = computed(() => userInfo.value);
     const userRole = computed(() => role.value);
 
     return {
@@ -25,6 +30,8 @@ export const userStore = defineStore(
       isLogged,
       role,
       loginStatus,
+      giveInfo,
+      getInfo,
       logIn,
       logOut,
       giveRole,

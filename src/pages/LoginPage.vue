@@ -49,10 +49,7 @@
         <div class="text-grey-8">
           Don't have an account yet?
           <a
-            @click="
-              console.log('Ciao');
-              login = !login;
-            "
+            @click="login = !login"
             class="text-dark text-weight-bold"
             style="text-decoration: none; cursor: pointer"
             >Sign up</a
@@ -83,16 +80,16 @@ import {
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
-
-// import { useQuasar, QSpinnerGears } from "quasar";
+import { useQuasar } from "quasar";
 import { userStore } from "stores/user.js";
-// import { useRouter } from "vue-router";
-// import { onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
 
 let login = ref(true);
 let email = ref("");
 let password = ref("");
 const store = userStore();
+const route = useRouter();
+const $q = useQuasar();
 
 async function Login() {
   try {
@@ -105,25 +102,31 @@ async function Login() {
     );
     const uid = user.user.uid;
     store.logIn();
-    /*TODO: TAKE USER INFO
-    
-    */
-    /*TODO: CHECK IF USER.UID IS ADMIN OR USER
-    
-    store.giveRole();
-    */
-    const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
-
+    let docRef = doc(db, "users", uid);
+    let docSnap = await getDoc(docRef);
+    const info = ref({});
     if (docSnap.exists()) {
-      console.log(docSnap.data());
+      // UTENTE
+      info.value = docSnap.data();
+      store.giveInfo(info.value);
+      store.giveRole("user");
     } else {
-      console.log("No such document!");
+      // ADMIN
+      docRef = doc(db, "admin", uid);
+      docSnap = await getDoc(docRef);
+      info.value = docSnap.data();
+      store.giveInfo(info.value);
+      store.giveRole("admin");
     }
 
-    console.log(uid);
+    route.push({ name: "home" });
   } catch (error) {
-    console.log(error);
+    $q.notify({
+      message: "Username o Password errati",
+      color: "red",
+      timeout: 2000,
+      position: "top",
+    });
   }
 }
 
@@ -143,45 +146,6 @@ function Signup() {
       // ..
     });
 }
-
-// const router = useRouter();
-// const store = userStore();
-// let username = ref("");
-// let password = ref("");
-// const $q = useQuasar();
-
-// function Login() {
-//   if (username.value === "admin" && password.value === "admin") {
-//     $q.notify({
-//       spinner: QSpinnerGears,
-//       message: "Verrai reindirizzato alla pagina principale...",
-//       color: "green",
-//       position: "top",
-//       timeout: 2000,
-//     });
-//     setTimeout(() => {
-//       var date = new Date();
-//       date.setDate(date.getDate() + 1);
-//       //   store.addLoggedUser(date.getTime(), username.value, password.value);
-//       router.push("/");
-//     }, 2500);
-//   } else {
-//     $q.notify({
-//       message: "Username o Password errati",
-//       color: "red",
-//       timeout: 2000,
-//       position: "top",
-//     });
-//     username.value = "";
-//     password.value = "";
-//   }
-// }
-
-// onBeforeMount(() => {
-//     if (store.isLogged) {
-//       router.push("/");
-//     }
-// });
 </script>
 
 <style>
