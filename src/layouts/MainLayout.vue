@@ -2,14 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
 
@@ -32,13 +25,7 @@
 
                   <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
 
-                  <q-btn
-                    color="primary"
-                    label="Logout"
-                    push
-                    size="sm"
-                    v-close-popup
-                  />
+                  <q-btn color="primary" label="Logout" push size="sm" v-close-popup />
                 </div>
               </div>
             </q-menu>
@@ -51,11 +38,7 @@
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
