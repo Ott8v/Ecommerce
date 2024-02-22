@@ -11,7 +11,28 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input dense outlined v-model="email" label="Email Address"></q-input>
+        <q-input
+          v-show="!login"
+          dense
+          outlined
+          v-model="name"
+          label="Name"
+        ></q-input>
+        <q-input
+          v-show="!login"
+          dense
+          outlined
+          class="q-mt-md"
+          v-model="surname"
+          label="Surname"
+        ></q-input>
+        <q-input
+          dense
+          outlined
+          class="q-mt-md"
+          v-model="email"
+          label="Email Address"
+        ></q-input>
         <q-input
           dense
           outlined
@@ -83,8 +104,11 @@ import { getFirestore } from "firebase/firestore";
 import { useQuasar } from "quasar";
 import { userStore } from "stores/user.js";
 import { useRouter } from "vue-router";
+import { onBeforeMount } from "vue";
 
 let login = ref(true);
+let name = ref("");
+let surname = ref("");
 let email = ref("");
 let password = ref("");
 const store = userStore();
@@ -92,6 +116,15 @@ const route = useRouter();
 const $q = useQuasar();
 
 async function Login() {
+  if (email.value === "" || password.value === "") {
+    $q.notify({
+      message: "Email and Password are required",
+      color: "red",
+      timeout: 2000,
+      position: "top",
+    });
+    return;
+  }
   try {
     const auth = getAuth();
     const db = getFirestore();
@@ -130,8 +163,30 @@ async function Login() {
   }
 }
 
-function Signup() {
+async function Signup() {
+  if (
+    name.value === "" ||
+    surname.value === "" ||
+    email.value === "" ||
+    password.value === ""
+  ) {
+    $q.notify({
+      message: "Name, Surname, Email and Password are required",
+      color: "red",
+      timeout: 2000,
+      position: "top",
+    });
+    return;
+  }
   const auth = getAuth();
+  const db = getFirestore();
+  const user = await createUserWithEmailAndPassword(
+    auth,
+    email.value,
+    password.value
+  );
+  const createUser = user.user;
+
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed up
@@ -146,6 +201,12 @@ function Signup() {
       // ..
     });
 }
+
+onBeforeMount(() => {
+  if (store.isLogged) {
+    route.push({ name: "home" });
+  }
+});
 </script>
 
 <style>
