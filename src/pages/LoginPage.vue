@@ -47,8 +47,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 import { useQuasar } from "quasar";
 import { userStore } from "stores/user.js";
 import { useRouter } from "vue-router";
