@@ -7,8 +7,18 @@
 
         <q-toolbar-title> Ecommerce </q-toolbar-title>
 
-        <div class="q-pa-md">
-          <q-btn color="purple" label="Account Settings">
+        <q-input dark dense standout v-model="text" input-class="text-right">
+          <template v-slot:append>
+            <q-icon v-if="text === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
+          </template>
+        </q-input>
+
+        <q-icon class="fas fa-cart-shopping q-mx-lg" style="cursor: pointer;" size="20px" />
+
+        <div class="q-py-md">
+          <!--<q-btn color="purple" label="Account Settings">-->
+          <q-icon class="fas fa-user" style="cursor: pointer;" size="20px">
             <q-menu>
               <div class="row no-wrap q-pa-md">
                 <div class="column">
@@ -29,22 +39,25 @@
                 </div>
               </div>
             </q-menu>
-          </q-btn>
+          </q-icon>
+          <!--</q-btn>-->
         </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-show="store.userRole == 'admin'" v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Dashboard </q-item-label>
+    <div v-if="store.userRole == 'admin'">
+      <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+        <q-list>
+          <q-item-label header> Dashboard </q-item-label>
 
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
+          <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        </q-list>
+      </q-drawer>
 
-    <q-page-container>
-      <router-view />
-    </q-page-container>
+      <q-page-container>
+        <router-view />
+      </q-page-container>
+    </div>
   </q-layout>
 </template>
 
@@ -54,6 +67,7 @@ import { userStore } from "stores/user.js";
 import EssentialLink from "components/EssentialLink.vue";
 
 const store = userStore();
+let text = ref('')
 const leftDrawerOpen = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
