@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
-        <LoginDash></LoginDash>
+        <AccountMenu />
       </q-toolbar>
     </q-header>
 
@@ -37,7 +37,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
-import LoginDash from "components/LoginDash.vue";
+import AccountMenu from "components/AccountMenu.vue";
 
 const linksList = [
   {
@@ -89,7 +89,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
-    LoginDash,
+    AccountMenu,
   },
 
   setup() {
