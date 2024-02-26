@@ -1,9 +1,6 @@
 <template>
-  <q-card flat bordered>
-    <q-card-section> Create Item </q-card-section>
-    <q-card-actions align="right">
-      <q-btn flat label="Create" />
-    </q-card-actions>
-  </q-card>
+  <CreateDash />
 </template>
-<script setup></script>
+<script setup>
+import CreateDash from "../components/CreateDash.vue";
+</script>
