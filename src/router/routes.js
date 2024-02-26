@@ -10,7 +10,11 @@ const routes = [
         component: () => import("pages/IndexPage.vue"),
       },
       { path: "login", component: () => import("pages/LoginPage.vue") },
-      { path: "admin", component: () => import("pages/AdminPage.vue") },
+      {
+        path: "admin",
+        name: "admin",
+        component: () => import("pages/AdminPage.vue"),
+      },
     ],
   },
   // Always leave this as last one,
