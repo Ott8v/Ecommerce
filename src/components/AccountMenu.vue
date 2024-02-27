@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div>
       <q-icon class="fas fa-user" style="cursor: pointer;" size="20px" @click="goLogin()">
       <q-menu>
         <div class="row no-wrap q-pa-md" v-show="doNotShow">
