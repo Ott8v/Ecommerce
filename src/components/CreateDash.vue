@@ -87,7 +87,7 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
-import { doc, collection, addDoc, getFirestore } from "firebase/firestore";
+import { collection, addDoc, getFirestore } from "firebase/firestore";
 const db = getFirestore();
 const $q = useQuasar();
 let item = ref({
