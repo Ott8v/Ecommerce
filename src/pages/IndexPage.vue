@@ -3,8 +3,8 @@
     <q-spinner-bars size="100px" color="primary" />
   </q-page>
 
-  <q-page v-if="itemsLength > 0" class="flex flex-start q-pa-md">
-    <div v-for="item in items" :key="item.uid">
+  <q-page style="min-height: 900px !important; max-height: 900px !important;" padding v-if="itemsLength > 0" class="row justify-center q-px-xl q-pt-lg">
+    <div class="q-px-md q-py-md" v-for="item in items" :key="item.uid">
       <q-card class="my-card">
         <!-- :src="item.data.image" -->
         <img src="https://cdn.quasar.dev/img/mountains.jpg" />
@@ -24,14 +24,6 @@
         </q-card-section>
         <q-separator />
         <q-card-actions style="display: flex; justify-content: space-between">
-          <!-- <q-input
-            v-model.number="model"
-            type="number"
-            min="1"
-            :max="item.data.quantity"
-            filled
-            style="line-height: 0.5em; font-size: 16px; max-width: 200px"
-          /> -->
 
           <q-input
             dense
@@ -42,14 +34,6 @@
             input-class="text-right"
             style="max-width: 80px"
           />
-          <!-- <q-input
-            input-class="text-right"
-            :max="item.data.quantity"
-            type="number"
-            v-model.number="cartAdd"
-            label="Quantity"
-            :dense="dense"
-          /> -->
 
           <q-btn
             flat
@@ -98,6 +82,8 @@ async function getAllItems() {
   });
   loading.value = false;
 }
+
+//TODO: Create the function addToCart
 
 onBeforeMount(() => {
   getAllItems();
