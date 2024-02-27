@@ -87,7 +87,7 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
-import { setDoc, getFirestore } from "firebase/firestore";
+import { doc, collection, addDoc, getFirestore } from "firebase/firestore";
 const db = getFirestore();
 const $q = useQuasar();
 let item = ref({
@@ -98,13 +98,26 @@ let item = ref({
   quantity: null,
 });
 
-const onSubmit = () => {
-  $q.notify({
-    color: "green-4",
-    textColor: "white",
-    icon: "cloud_done",
-    message: "Item created",
-  });
+const onSubmit = async () => {
+  try {
+    await addDoc(collection(db, "items"), item.value);
+    item.value.description = undefined;
+    item.value.img = undefined;
+    item.value.name = undefined;
+    item.value.price = null;
+    item.value.quantity = null;
+    $q.notify({
+      color: "green-4",
+      textColor: "white",
+      icon: "cloud_done",
+      message: "Item created",
+    });
+  } catch (err) {
+    $q.notify({
+      type: "negative",
+      message: "An error occured when creating item",
+    });
+  }
 };
 
 const onReset = () => {
