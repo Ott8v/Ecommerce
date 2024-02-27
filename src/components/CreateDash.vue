@@ -4,30 +4,34 @@
       <q-card flat bordered>
         <q-card-section> Create Item </q-card-section>
         <q-card-section>
-          <q-input outlined dense v-model="item.name" label="Name" />
-          <q-input
-            outlined
-            dense
-            v-model="item.description"
-            type="textarea"
-            label="Description"
-          />
+          <label>Name:</label>
+          <q-input outlined dense v-model="item.name" />
+        </q-card-section>
+
+        <q-card-section>
+          <label>Description:</label>
+          <q-input outlined dense v-model="item.description" type="textarea" />
+        </q-card-section>
+        <q-card-section>
+          <label>Quantity:</label>
           <q-input
             outlined
             dense
             type="number"
-            v-model="item.quantity"
-            label="Quantity"
+            v-model.number="item.quantity"
           />
+        </q-card-section>
+        <q-card-section>
+          <label>Price:</label>
           <q-input
             outlined
             dense
             type="number"
             prefix="€"
-            v-model="item.price"
-            label="Price"
+            v-model.number="item.price"
           />
         </q-card-section>
+
         <q-card-actions align="right">
           <q-btn flat label="Create" />
         </q-card-actions>
