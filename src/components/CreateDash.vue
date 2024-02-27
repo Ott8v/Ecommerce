@@ -1,5 +1,5 @@
 <template>
-  <div class="column items-center">
+  <div class="items-center">
     <div
       class="q-pa-md"
       style="
