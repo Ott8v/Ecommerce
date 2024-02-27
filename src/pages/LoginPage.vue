@@ -149,32 +149,7 @@ async function Signup() {
     store.giveRole("user");
     route.push({ name: "home" });
   } catch (error) {
-    switch (error.code) {
-      case "auth/weak-password":
-        $q.notify({
-          message: "Weak Password",
-          color: "red",
-          timeout: 2000,
-          position: "top",
-        });
-        break;
-      case "auth/email-already-in-use":
-        $q.notify({
-          message: "Email already in use",
-          color: "red",
-          timeout: 2000,
-          position: "top",
-        });
-        break;
-      default:
-        $q.notify({
-          message: "Unknown error",
-          color: "red",
-          timeout: 2000,
-          position: "top",
-        });
-        break;
-    }
+    
   }
 }
 
