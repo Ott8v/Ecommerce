@@ -11,81 +11,29 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input
-          v-show="!login"
-          dense
-          outlined
-          v-model="name"
-          label="Name"
-        ></q-input>
-        <q-input
-          v-show="!login"
-          dense
-          outlined
-          class="q-mt-md"
-          v-model="surname"
-          label="Surname"
-        ></q-input>
-        <q-input
-          dense
-          outlined
-          class="q-mt-md"
-          v-model="email"
-          label="Email Address"
-        ></q-input>
-        <q-input
-          dense
-          outlined
-          class="q-mt-md"
-          v-model="password"
-          type="password"
-          label="Password"
-        ></q-input>
+        <q-input v-show="!login" dense outlined v-model="name" label="Name"></q-input>
+        <q-input v-show="!login" dense outlined class="q-mt-md" v-model="surname" label="Surname"></q-input>
+        <q-input dense outlined class="q-mt-md" v-model="email" label="Email Address"></q-input>
+        <q-input dense outlined class="q-mt-md" v-model="password" type="password" label="Password"></q-input>
       </q-card-section>
       <q-card-section>
-        <q-btn
-          v-if="login"
-          @click="Login()"
-          style="border-radius: 8px"
-          color="dark"
-          rounded
-          size="md"
-          label="Sign in"
-          no-caps
-          class="full-width"
-        ></q-btn>
-        <q-btn
-          v-else
-          @click="Signup()"
-          style="border-radius: 8px"
-          color="dark"
-          rounded
-          size="md"
-          label="Sign up"
-          no-caps
-          class="full-width"
-        ></q-btn>
+        <q-btn v-if="login" @click="Login()" style="border-radius: 8px" color="dark" rounded size="md" label="Sign in"
+          no-caps class="full-width"></q-btn>
+        <q-btn v-else @click="Signup()" style="border-radius: 8px" color="dark" rounded size="md" label="Sign up" no-caps
+          class="full-width"></q-btn>
       </q-card-section>
       <q-card-section v-if="login" class="text-center q-pt-none">
         <div class="text-grey-8">
           Don't have an account yet?
-          <a
-            @click="login = !login"
-            class="text-dark text-weight-bold"
-            style="text-decoration: none; cursor: pointer"
-            >Sign up</a
-          >
+          <a @click="login = !login" class="text-dark text-weight-bold"
+            style="text-decoration: none; cursor: pointer">Sign up</a>
         </div>
       </q-card-section>
       <q-card-section v-else class="text-center q-pt-none">
         <div class="text-grey-8">
           Do you have an account?
-          <a
-            @click="login = !login"
-            class="text-dark text-weight-bold"
-            style="text-decoration: none; cursor: pointer"
-            >Sign in</a
-          >
+          <a @click="login = !login" class="text-dark text-weight-bold"
+            style="text-decoration: none; cursor: pointer">Sign in</a>
         </div>
       </q-card-section>
     </q-card>
@@ -99,8 +47,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 import { useQuasar } from "quasar";
 import { userStore } from "stores/user.js";
 import { useRouter } from "vue-router";
@@ -113,6 +60,7 @@ let email = ref("");
 let password = ref("");
 const store = userStore();
 const route = useRouter();
+const info = ref({});
 const $q = useQuasar();
 
 async function Login() {
@@ -137,7 +85,6 @@ async function Login() {
     store.logIn();
     let docRef = doc(db, "users", uid);
     let docSnap = await getDoc(docRef);
-    const info = ref({});
     if (docSnap.exists()) {
       // UTENTE
       info.value = docSnap.data();
@@ -155,7 +102,7 @@ async function Login() {
     route.push({ name: "home" });
   } catch (error) {
     $q.notify({
-      message: "Username o Password errati",
+      message: "Username o Password wrong",
       color: "red",
       timeout: 2000,
       position: "top",
@@ -178,28 +125,57 @@ async function Signup() {
     });
     return;
   }
-  const auth = getAuth();
-  const db = getFirestore();
-  const user = await createUserWithEmailAndPassword(
-    auth,
-    email.value,
-    password.value
-  );
-  const createUser = user.user;
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up
-      const user = userCredential.user;
-      console.log(user);
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(error);
-      // ..
+  try {
+    const auth = getAuth();
+    const db = getFirestore();
+    const user = await (createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    ));
+
+    const uid = user.user.uid;
+    store.logIn();
+    const docRef = doc(db, "users", uid);
+    await setDoc(docRef, {
+      cognome: surname.value,
+      nome: name.value,
     });
+
+    let docSnap = await getDoc(docRef);
+    info.value = docSnap.data();
+    store.giveInfo(info.value);
+    store.giveRole("user");
+    route.push({ name: "home" });
+  } catch (error) {
+    switch (error.code) {
+      case "auth/weak-password":
+        $q.notify({
+          message: "Weak Password",
+          color: "red",
+          timeout: 2000,
+          position: "top",
+        });
+        break;
+      case "auth/email-already-in-use":
+        $q.notify({
+          message: "Email already in use",
+          color: "red",
+          timeout: 2000,
+          position: "top",
+        });
+        break;
+      default:
+        $q.notify({
+          message: "Unknown error",
+          color: "red",
+          timeout: 2000,
+          position: "top",
+        });
+        break;
+    }
+  }
 }
 
 onBeforeMount(() => {
