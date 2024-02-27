@@ -1,17 +1,38 @@
 <template>
   <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { ref } from 'vue'
+import { collection, doc, getDocs, getFirestore, getCountFromServer } from "firebase/firestore";
+import { onBeforeMount } from 'vue';
 
-export default defineComponent({
-  name: 'IndexPage'
-})
+// TODO: find a way for see if the collection have data inside it
+
+// const db = getFirestore();
+// const itemsRef = ref(null);
+// const docsSnap
+// const number = ref(null);
+
+// async function test() {
+//   try {
+//     itemsRef.value = collection(db, "items");
+//     docsSnap.value = await getDocs(itemsRef);
+//     number.value = await getCountFromServer(itemsRef);
+
+
+//     console.log('count: ', snapshot.data().count);
+//     docsSnap.value.forEach((doc) => {
+//       console.log(doc.id, " => ", doc.data());
+//     });
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+// onBeforeMount(() => {
+//   test()
+// })
 </script>

@@ -2,41 +2,25 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn v-show="store.userRole == 'admin'" flat dense round icon="menu" aria-label="Menu"
+          @click="toggleLeftDrawer" />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> Ecommerce </q-toolbar-title>
+        <q-input dark dense standout v-model="text" input-class="text-right">
+          <template v-slot:append>
+            <q-icon v-if="text === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
+          </template>
+        </q-input>
 
-        <div class="q-pa-md">
-          <q-btn color="purple" label="Account Settings">
-            <q-menu>
-              <div class="row no-wrap q-pa-md">
-                <div class="column">
-                  <div class="text-h6 q-mb-md">Settings</div>
-                  <q-toggle v-model="mobileData" label="Use Mobile Data" />
-                  <q-toggle v-model="bluetooth" label="Bluetooth" />
-                </div>
-
-                <q-separator vertical inset class="q-mx-lg" />
-
-                <div class="column items-center">
-                  <q-avatar size="72px">
-                    <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-                  </q-avatar>
-
-                  <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
-
-                  <q-btn color="primary" label="Logout" push size="sm" v-close-popup />
-                </div>
-              </div>
-            </q-menu>
-          </q-btn>
-        </div>
+        <q-icon class="fas fa-cart-shopping q-mx-lg" style="cursor: pointer;" size="20px" />
+        <AccountMenu />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-if="store.userRole == 'admin'" v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> Dashboard </q-item-label>
 
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       </q-list>
@@ -48,72 +32,17 @@
   </q-layout>
 </template>
 
-<script>
-import { defineComponent, ref } from "vue";
+<script setup>
+import { ref } from "vue";
+import { userStore } from "stores/user.js";
 import EssentialLink from "components/EssentialLink.vue";
+import AccountMenu from "components/AccountMenu.vue";
 
-const linksList = [
-  {
-    title: "Docs",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "https://quasar.dev",
-  },
-  {
-    title: "Github",
-    caption: "github.com/quasarframework",
-    icon: "code",
-    link: "https://github.com/quasarframework",
-  },
-  {
-    title: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev",
-  },
-  {
-    title: "Forum",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev",
-  },
-  {
-    title: "Twitter",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev",
-  },
-  {
-    title: "Facebook",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev",
-  },
-  {
-    title: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev",
-  },
-];
-
-export default defineComponent({
-  name: "MainLayout",
-
-  components: {
-    EssentialLink,
-  },
-
-  setup() {
-    const leftDrawerOpen = ref(false);
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-    };
-  },
-});
+const store = userStore();
+let text = ref('')
+const leftDrawerOpen = ref(false);
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+const linksList = [];
 </script>

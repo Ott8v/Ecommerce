@@ -47,8 +47,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 import { useQuasar } from "quasar";
 import { userStore } from "stores/user.js";
 import { useRouter } from "vue-router";
@@ -150,32 +149,7 @@ async function Signup() {
     store.giveRole("user");
     route.push({ name: "home" });
   } catch (error) {
-    switch (error.code) {
-      case "auth/weak-password":
-        $q.notify({
-          message: "Weak Password",
-          color: "red",
-          timeout: 2000,
-          position: "top",
-        });
-        break;
-      case "auth/email-already-in-use":
-        $q.notify({
-          message: "Email already in use",
-          color: "red",
-          timeout: 2000,
-          position: "top",
-        });
-        break;
-      default:
-        $q.notify({
-          message: "Unknown error",
-          color: "red",
-          timeout: 2000,
-          position: "top",
-        });
-        break;
-    }
+    
   }
 }
 
