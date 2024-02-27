@@ -16,6 +16,8 @@ export const userStore = defineStore(
     };
     const logOut = () => {
       isLogged.value = false;
+      userInfo.value = {};
+      role.value = "";
     };
     const giveRole = (value) => {
       role.value = value;
