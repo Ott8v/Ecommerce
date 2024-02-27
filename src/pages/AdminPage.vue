@@ -1,5 +1,6 @@
 <template>
   <h3>Hi {{ store.getInfo.nome }} {{ store.getInfo.cognome }},</h3>
+  <p>Welcome to the admin page. Here you can create/delete and update items.</p>
   <CreateDash />
 </template>
 <script setup>
