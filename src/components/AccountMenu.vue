@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-btn color="black" :label="stringChange" @click="goLogin()">
+      <q-icon class="fas fa-user" style="cursor: pointer;" size="20px" @click="goLogin()">
       <q-menu>
         <div class="row no-wrap q-pa-md" v-show="doNotShow">
           <div class="column items-center">
@@ -22,7 +22,7 @@
           </div>
         </div>
       </q-menu>
-    </q-btn>
+    </q-icon>
   </div>
 </template>
 <script setup>
@@ -31,9 +31,6 @@ import { userStore } from "src/stores/user";
 import { computed } from "vue";
 const store = userStore();
 const route = useRouter();
-const stringChange = computed(() => {
-  return store.loginStatus ? "Account" : "Login";
-});
 
 const doNotShow = computed(() => {
   return store.loginStatus;
