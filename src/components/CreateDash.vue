@@ -1,33 +1,34 @@
 <template>
   <div class="column items-center">
-    <div class="q-pa-md" style="max-width: 400px">
-      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-        <q-input
-          filled
-          v-model="item.name"
-          label="Your name *"
-          hint="Name and surname"
-          lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-        />
-
+    <div
+      class="q-pa-md"
+      style="
+        width: 300px;
+        max-width: 400px;
+        border-style: solid;
+        border-radius: 10px;
+        border-width: 1px;
+        border-color: lightgrey;
+      "
+    >
+      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-sm">
         <q-input
           filled
           v-model="item.name"
           label="Item name"
           lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+          :rules="[(val) => (val && val.length > 0) || 'Name can\'t be empty.']"
         />
 
         <q-input
           filled
-          type="number"
-          v-model.number="item.quantity"
-          label="Quantity"
+          v-model="item.description"
+          label="Item description"
           lazy-rules
+          autogrow
           :rules="[
-            (val) => (val !== null && val !== '') || 'Please type your age',
-            (val) => (val > 0 && val < 100) || 'Please type a real age',
+            (val) => (val && val.length > 0) || 'Description can\'t be empty.',
+            (val) => (val && val.length <= 200) || 'Description too long.',
           ]"
         />
 
@@ -38,32 +39,36 @@
           label="Quantity"
           lazy-rules
           :rules="[
-            (val) => (val !== null && val !== '') || 'Please type your age',
-            (val) => (val > 0 && val < 100) || 'Please type a real age',
+            (val) => (val !== null && val !== '') || 'Quantity can\'t be empty',
+            (val) => val >= 0 || 'Quantity can\'t be negative or equal 0.',
           ]"
         />
 
         <q-input
           filled
           type="number"
-          v-model.number="item.quantity"
-          label="Quantity"
+          v-model.number="item.price"
+          label="Price"
           lazy-rules
           :rules="[
-            (val) => (val !== null && val !== '') || 'Please type your age',
-            (val) => (val > 0 && val < 100) || 'Please type a real age',
+            (val) => (val !== null && val !== '') || 'Price can\'t be empty',
+            (val) => val >= 0 || 'Price can\'t be negative or equal 0.',
           ]"
-        />
+        >
+          <template v-slot:prepend>
+            <q-icon name="euro" />
+          </template>
+        </q-input>
 
         <div>
           <q-btn
-            label="Reset"
+            label="Cancel"
             type="reset"
             color="primary"
             flat
             class="q-ml-sm"
           />
-          <q-btn label="Submit" type="submit" color="primary" />
+          <q-btn label="Create" type="submit" color="primary" />
         </div>
       </q-form>
     </div>
@@ -74,9 +79,9 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 const $q = useQuasar();
 let item = ref({
-  description: null,
-  img: null,
-  name: null,
+  description: undefined,
+  img: undefined,
+  name: undefined,
   price: null,
   quantity: null,
 });
@@ -91,9 +96,9 @@ const onSubmit = () => {
 };
 
 const onReset = () => {
-  item.value.description = null;
-  item.value.img = null;
-  item.value.name = null;
+  item.value.description = undefined;
+  item.value.img = undefined;
+  item.value.name = undefined;
   item.value.price = null;
   item.value.quantity = null;
 };
