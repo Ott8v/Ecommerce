@@ -22,6 +22,16 @@
 
         <q-input
           filled
+          v-model="item.img"
+          label="Immage"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Immage can\'t be empty.',
+          ]"
+        />
+
+        <q-input
+          filled
           v-model="item.description"
           label="Item description"
           lazy-rules
