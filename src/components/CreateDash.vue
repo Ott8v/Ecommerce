@@ -8,6 +8,13 @@
           <q-input
             outlined
             dense
+            v-model="item.description"
+            type="textarea"
+            label="Description"
+          />
+          <q-input
+            outlined
+            dense
             type="number"
             v-model="item.quantity"
             label="Quantity"
@@ -31,8 +38,10 @@
 <script setup>
 import { ref } from "vue";
 let item = ref({
+  description: undefined,
+  img: undefined,
   name: undefined,
-  quantity: undefined,
   price: undefined,
+  quantity: undefined,
 });
 </script>
