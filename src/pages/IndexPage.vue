@@ -3,7 +3,7 @@
     <q-spinner-bars size="100px" color="primary" />
   </q-page>
 
-  <q-page v-if="itemsLength > 0" class="flex flex-center">
+  <q-page v-if="itemsLength > 0" class="flex flex-start q-pa-md">
     <div v-for="item in items" :key="item.uid">
       <q-card class="my-card">
         <!-- :src="item.data.image" -->
@@ -81,30 +81,25 @@ import { ref } from "vue";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { onBeforeMount } from "vue";
 
-// TODO: find a way for see if the collection have data inside it
-
 const db = getFirestore();
 const querySnapshot = ref(null);
-const itemsLength = ref(null);
+const itemsLength = ref(0);
 let items = ref([]);
 let loading = ref(true);
 let cartAdd = ref(1);
 
 async function getAllItems() {
   querySnapshot.value = await getDocs(collection(db, "items"));
-  console.log(querySnapshot.value.size);
   itemsLength.value = querySnapshot.value.size;
   querySnapshot.value.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // doc.id is the uid of the document - doc.data() is the data (obj) of the document
     items.value.push({ uid: doc.id, data: doc.data() });
-    console.log(doc.id, " => ", doc.data());
   });
   loading.value = false;
 }
 
 onBeforeMount(() => {
-  console.log("ciao");
   getAllItems();
 });
 </script>
