@@ -7,12 +7,17 @@
       </p>
     </div>
     <div class="col q-pt-xl">
+      <label>Create Item</label>
       <CreateDash />
+    </div>
+    <div class="col">
+      <TableComponent />
     </div>
   </div>
 </template>
 <script setup>
 import CreateDash from "../components/CreateDash.vue";
+import TableComponent from "../components/TableComponent.vue";
 import { userStore } from "../stores/user.js";
 const store = userStore();
 </script>
