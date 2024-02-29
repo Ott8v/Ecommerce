@@ -3,49 +3,46 @@
     <q-spinner-bars size="100px" color="primary" />
   </q-page>
 
-  <q-page style="min-height: 900px !important; max-height: 900px !important;" padding v-if="itemsLength > 0" class="row justify-center q-px-xl q-pt-lg">
-    <div class="q-px-md q-py-md" v-for="item in items" :key="item.uid">
-      <q-card class="my-card">
-        <!-- :src="item.data.image" -->
-        <img src="https://cdn.quasar.dev/img/mountains.jpg" />
+  <q-page style="min-height: 900px !important; max-height: 900px !important;" padding v-if="itemsLength > 0 && !loading">
+    <q-infinite-scroll @load="onLoad" :offset="250">
+      <div class="row justify-center">
+        <div class="q-px-md q-py-md" v-for="item in items2" :key="item.uid">
+          <q-card class="my-card">
+            <!-- :src="item.data.image" -->
+            <img src="https://cdn.quasar.dev/img/mountains.jpg" />
 
-        <q-card-section>
-          <div class="text-h6">{{ item.data.name }}</div>
-        </q-card-section>
+            <q-card-section>
+              <div class="text-h6">{{ item.data.name }}</div>
+            </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          {{ item.data.description }}
-        </q-card-section>
+            <q-card-section class="q-pt-none">
+              {{ item.data.description }}
+            </q-card-section>
 
-        <q-separator />
-        <q-card-section style="display: flex; justify-content: space-between">
-          <div class="text-subtitle2">In Stock: {{ item.data.quantity }}</div>
-          <div class="text-subtitle2">Price: ${{ item.data.price }}</div>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions style="display: flex; justify-content: space-between">
+            <q-separator />
+            <q-card-section style="display: flex; justify-content: space-between">
+              <div class="text-subtitle2">In Stock: {{ item.data.quantity }}</div>
+              <div class="text-subtitle2">Price: ${{ item.data.price }}</div>
+            </q-card-section>
+            <q-separator />
+            <q-card-actions v-if="!admin" style="display: flex; justify-content: space-between">
 
-          <q-input
-            dense
-            v-model.number="cartAdd"
-            type="number"
-            :max="item.data.quantity"
-            label="Quantity"
-            input-class="text-right"
-            style="max-width: 80px"
-          />
+              <q-input dense v-model.number="cartAdd[items2.indexOf(item)]" type="number" :max="item.data.quantity"
+                label="Quantity" input-class="text-right" style="max-width: 80px" />
 
-          <q-btn
-            flat
-            label="Add to Cart"
-            color="primary"
-            @click="addToCart(item)"
-          />
-        </q-card-actions>
-      </q-card>
-    </div>
+              <q-btn flat label="Add to Cart" color="primary" @click="addToCart(item)" />
+            </q-card-actions>
+            <q-card-actions v-else style="display: flex; justify-content: space-between">
+              <q-btn flat label="Edit" color="primary" />
+              <q-btn @click="Delete(item)" flat label="Delete" color="negative" />
+            </q-card-actions>
+          </q-card>
+
+        </div>
+      </div>
+    </q-infinite-scroll>
   </q-page>
-  <q-page v-else class="flex flex-center">
+  <q-page v-else-if="itemsLength < 1 && !loading" class="flex flex-center">
     <q-card dark bordered class="bg-primary my-card">
       <q-card-section>
         <div class="text-h6">Welcome to the Ecommerce App</div>
@@ -62,30 +59,80 @@
 
 <script setup>
 import { ref } from "vue";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { doc, collection, deleteDoc, getDocs, getFirestore } from "firebase/firestore";
 import { onBeforeMount } from "vue";
+import { userStore } from "stores/user.js";
+import { useQuasar } from "quasar";
 
+const store = userStore();
 const db = getFirestore();
 const querySnapshot = ref(null);
 const itemsLength = ref(0);
 let items = ref([]);
 let loading = ref(true);
-let cartAdd = ref(1);
+let cartAdd = ref([]);
+let items2 = ref([]);
+let loadlength = 20;
+let admin = ref(false)
+const $q = useQuasar();
+let dialog = ref(false);
 
 async function getAllItems() {
   querySnapshot.value = await getDocs(collection(db, "items"));
   itemsLength.value = querySnapshot.value.size;
+  cartAdd.value = new Array(itemsLength.value);
   querySnapshot.value.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // doc.id is the uid of the document - doc.data() is the data (obj) of the document
     items.value.push({ uid: doc.id, data: doc.data() });
   });
+
+  items2.value = items.value.slice(0, loadlength);
+
   loading.value = false;
 }
 
-//TODO: Create the function addToCart
+function onLoad(index, done) {
+  loadlength += 10;
+  items2.value = items.value.slice(0, loadlength);
+  if (loadlength >= itemsLength.value) {
+    done(false);
+  }
+  done(true);
+}
+
+function Delete(item) {
+
+  $q.dialog({
+    dark: true,
+    title: 'Confirm',
+    message: 'Are you sure you want to delete this item? This action cannot be undone.',
+    cancel: true,
+    persistent: true
+  }).onOk(async () => {
+    await deleteDoc(doc(db, "items", item.uid));
+    window.location.reload();
+  })
+
+}
+
+function addToCart(item) {
+  if (store.isLogged) {
+    console.log("Add to cart", item);
+  } else {
+    $q.notify({
+      message: "You need to be logged in to add items to the cart.",
+      color: "red",
+      timeout: 2000,
+      position: "top",
+    });
+  }
+}
 
 onBeforeMount(() => {
+  if (store.userRole === 'admin') {
+    admin.value = true;
+  }
   getAllItems();
 });
 </script>

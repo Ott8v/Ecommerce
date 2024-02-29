@@ -5,7 +5,7 @@
         <q-btn v-show="store.userRole == 'admin'" flat dense round icon="menu" aria-label="Menu"
           @click="toggleLeftDrawer" />
 
-        <q-toolbar-title> Ecommerce </q-toolbar-title>
+        <q-toolbar-title style="cursor: pointer;" @click="route.push({ name: 'home' })"> Ecommerce </q-toolbar-title>
         <q-input dark dense standout v-model="text" input-class="text-right">
           <template v-slot:append>
             <q-icon v-if="text === ''" name="search" />
@@ -37,7 +37,9 @@ import { ref } from "vue";
 import { userStore } from "stores/user.js";
 import EssentialLink from "components/EssentialLink.vue";
 import AccountMenu from "components/AccountMenu.vue";
+import { useRouter } from "vue-router";
 
+const route = useRouter();
 const store = userStore();
 let text = ref('')
 const leftDrawerOpen = ref(false);
