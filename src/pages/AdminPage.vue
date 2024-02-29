@@ -6,7 +6,7 @@
         Welcome to the admin page. Here you can create/delete and update items.
       </p>
     </div>
-    <div class="column q-pt-xl q-px-lg">
+    <div class="column q-pt-xl q-px-md">
       <label>Create Item</label>
       <CreateDash />
     </div>
