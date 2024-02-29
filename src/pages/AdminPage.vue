@@ -31,6 +31,7 @@ async function getAllItems() {
   querySnapshot.value.forEach((doc) => {
     let obj = {
       id: doc.id,
+      img: doc.image,
       name: doc.data().name,
       quantity: doc.data().quantity,
       price: doc.data().price,
