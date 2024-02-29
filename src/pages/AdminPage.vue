@@ -6,10 +6,10 @@
   </div>
   <div class="row">
     <div class="column">
-      <TableComponent title="Users" />
+      <TableComponent title="Users" :columns="columnsUsers" />
     </div>
     <div class="column q-pl-sm">
-      <TableComponent title="Items" :columns="columns" :rows="rows" />
+      <TableComponent title="Items" :columns="columnsItems" :rows="rowsItems" />
     </div>
     <div class="column q-pl-sm q-pt-sm">
       <CreateDash />
@@ -24,23 +24,12 @@ import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { ref, onBeforeMount } from "vue";
 const store = userStore();
 const db = getFirestore();
-const querySnapshot = ref(null);
-let rows = ref([]);
+const querySnapshotItems = ref(null);
+const querySnapshotUsers = ref(null);
+let rowsItems = ref([]);
+let rowsUsers = ref([]);
 
-async function getAllItems() {
-  querySnapshot.value = await getDocs(collection(db, "items"));
-  querySnapshot.value.forEach((doc) => {
-    let obj = {
-      id: doc.id,
-      img: doc.image,
-      name: doc.data().name,
-      quantity: doc.data().quantity,
-      price: doc.data().price,
-    };
-    rows.value.push(obj);
-  });
-}
-const columns = ref([
+const columnsItems = ref([
   {
     name: "id",
     label: "Id",
@@ -66,6 +55,33 @@ const columns = ref([
     align: "center",
   },
 ]);
+
+const columnsUsers =
+  ref[
+    [
+      {
+        name: "name",
+        label: "name",
+        field: "name",
+        align: "center",
+      },
+    ]
+  ];
+
+async function getAllItems() {
+  querySnapshotItems.value = await getDocs(collection(db, "items"));
+  querySnapshotItems.value.forEach((doc) => {
+    let obj = {
+      id: doc.id,
+      img: doc.image,
+      name: doc.data().name,
+      quantity: doc.data().quantity,
+      price: doc.data().price,
+    };
+    rowsItems.value.push(obj);
+  });
+}
+async function geatAllUsers() {}
 
 onBeforeMount(() => {
   getAllItems();
