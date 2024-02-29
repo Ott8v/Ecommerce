@@ -45,21 +45,25 @@ const columns = ref([
     name: "id",
     label: "Id",
     field: "id",
+    align: "center",
   },
   {
     name: "name",
     label: "Name",
     field: "name",
+    align: "center",
   },
   {
     name: "quantity",
     label: "Quantity",
     field: "quantity",
+    align: "center",
   },
   {
     name: "price",
     label: "Price",
     field: "price",
+    align: "center",
   },
 ]);
 
