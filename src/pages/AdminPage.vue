@@ -5,7 +5,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="column">
+    <div class="column q-pl-sm">
       <TableComponent title="Users" :columns="columnsUsers" :rows="rowsUsers" />
     </div>
     <div class="column q-pl-sm">
