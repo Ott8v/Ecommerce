@@ -8,6 +8,8 @@
       :rows="rows"
       :columns="columns"
       virtual-scroll
+      separator="cell"
+      :pagination="{ rowsPerPage: 0 }"
       :rows-per-page-options="[0]"
     />
   </div>
