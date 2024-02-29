@@ -141,6 +141,7 @@ async function Signup() {
     await setDoc(docRef, {
       cognome: surname.value,
       nome: name.value,
+      cart: []
     });
 
     let docSnap = await getDoc(docRef);
