@@ -28,7 +28,7 @@
             <q-card-actions v-if="!admin" style="display: flex; justify-content: space-between">
 
               <q-input dense v-model.number="cartAdd[items2.indexOf(item)]" type="number" :max="item.data.quantity"
-                label="Quantity" input-class="text-right" style="max-width: 80px" />
+                label="Quantity" input-class="text-right" min="1" style="max-width: 80px" />
 
               <q-btn flat label="Add to Cart" color="primary" @click="addToCart(item)" />
             </q-card-actions>
@@ -110,18 +110,41 @@ function Delete(item) {
     cancel: true,
     persistent: true
   }).onOk(async () => {
+
+    const tempItem = JSON.parse(JSON.stringify(item))
+    const tempItem2 = JSON.parse(JSON.stringify(items.value))
+
+    let index = tempItem2.findIndex(o => o.uid === tempItem.uid);
+    items2.value.splice(index, 1);
+
     await deleteDoc(doc(db, "items", item.uid));
-    window.location.reload();
   })
 
 }
 
 function addToCart(item) {
-  if (store.isLogged) {
-    console.log("Add to cart", item);
-  } else {
+  const tempItem = JSON.parse(JSON.stringify(item))
+  const tempItem2 = JSON.parse(JSON.stringify(items.value))
+
+  let index = tempItem2.findIndex(o => o.uid === tempItem.uid);
+
+  if (!store.isLogged) {
     $q.notify({
       message: "You need to be logged in to add items to the cart.",
+      color: "red",
+      timeout: 2000,
+      position: "top",
+    });
+    return;
+  }
+
+
+  if (cartAdd.value[index] > 0) {
+
+    console.log("Add to cart", tempItem.uid);
+  } else {
+    $q.notify({
+      message: "You need to add at least one item to the cart.",
       color: "red",
       timeout: 2000,
       position: "top",
