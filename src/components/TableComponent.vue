@@ -1,7 +1,7 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-ma-md">
     <q-table
-      style="height: 400px"
+      style="height: 400px; min-width: 200px; max-width: 600px; width: 600px"
       flat
       bordered
       title="Items"
@@ -13,12 +13,7 @@
   </div>
 </template>
 <script setup>
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  snapshotEqual,
-} from "firebase/firestore";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { ref, onBeforeMount, computed } from "vue";
 const db = getFirestore();
 const querySnapshot = ref(null);
