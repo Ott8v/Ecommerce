@@ -11,7 +11,8 @@
           </template>
         </q-input>
 
-        <q-icon class="fas fa-cart-shopping q-mx-lg" style="cursor: pointer;" size="20px" />
+        <q-icon class="fas fa-cart-shopping q-mx-lg" @click="route.push({ name: 'cart' })" style="cursor: pointer;"
+          size="20px" />
         <AccountMenu />
       </q-toolbar>
     </q-header>
@@ -25,7 +26,6 @@
 <script setup>
 import { ref } from "vue";
 import { userStore } from "stores/user.js";
-import EssentialLink from "components/EssentialLink.vue";
 import AccountMenu from "components/AccountMenu.vue";
 import { useRouter } from "vue-router";
 

@@ -58,7 +58,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue"; import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { ref } from "vue";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, collection, deleteDoc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { onBeforeMount } from "vue";
 import { userStore } from "stores/user.js";
