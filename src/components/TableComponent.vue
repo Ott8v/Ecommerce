@@ -1,10 +1,10 @@
 <template>
   <div>
     <q-table
-      style="height: 530px; min-width: 200px; max-width: 650px; width: 650px"
+      style="height: 530px; min-width: 200px; max-width: 600px; width: 600px"
       flat
       bordered
-      title="Items"
+      :title="title"
       :rows="rows"
       :columns="columns"
       virtual-scroll
@@ -15,5 +15,5 @@
   </div>
 </template>
 <script setup>
-defineProps({ columns: Array, rows: Array });
+defineProps({ title: String, columns: Array, rows: Array });
 </script>

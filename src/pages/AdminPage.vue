@@ -5,13 +5,14 @@
     </div>
   </div>
   <div class="row">
-    <div class="column"></div>
-    <div class="column q-px-md">
-      <label>Create Item</label>
-      <CreateDash />
-    </div>
     <div class="column">
-      <TableComponent :columns="columns" :rows="rows" />
+      <TableComponent title="Users" />
+    </div>
+    <div class="column q-pl-sm">
+      <TableComponent title="Items" :columns="columns" :rows="rows" />
+    </div>
+    <div class="column q-pl-sm q-pt-sm">
+      <CreateDash />
     </div>
   </div>
 </template>
