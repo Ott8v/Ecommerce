@@ -139,9 +139,9 @@ async function Signup() {
     store.logIn();
     const docRef = doc(db, "users", uid);
     await setDoc(docRef, {
-      cognome: surname.value,
-      nome: name.value,
-      cart: []
+      surname: surname.value,
+      name: name.value,
+      cart: {}
     });
 
     let docSnap = await getDoc(docRef);

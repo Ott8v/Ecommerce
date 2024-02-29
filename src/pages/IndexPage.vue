@@ -58,8 +58,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { doc, collection, deleteDoc, getDocs, getFirestore } from "firebase/firestore";
+import { ref } from "vue"; import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, collection, deleteDoc, getDoc, getDocs, getFirestore, updateDoc, arrayUnion, addDoc, setDoc } from "firebase/firestore";
 import { onBeforeMount } from "vue";
 import { userStore } from "stores/user.js";
 import { useQuasar } from "quasar";
@@ -128,28 +128,54 @@ function addToCart(item) {
 
   let index = tempItem2.findIndex(o => o.uid === tempItem.uid);
 
-  if (!store.isLogged) {
-    $q.notify({
-      message: "You need to be logged in to add items to the cart.",
-      color: "red",
-      timeout: 2000,
-      position: "top",
-    });
-    return;
-  }
+  const auth = getAuth();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      const uid = user.uid;
+      try {
 
 
-  if (cartAdd.value[index] > 0) {
+        if (cartAdd.value[index] > 0) {
+          const docRef = doc(db, "users", uid);
+          const docSnap = await getDoc(docRef);
+          // await updateDoc(docRef, {
+          //   cart: { [tempItem.uid]: cartAdd.value[index] },
+          // }, { merge: true })
+          await setDoc(docRef, {
+            cart: { [tempItem.uid]: cartAdd.value[index] },
+          }, { merge: true })
+          $q.notify({
+            message: "Item added to the cart.",
+            color: "green",
+            timeout: 2000,
+            position: "top",
+          });
+        } else {
+          $q.notify({
+            message: "You need to add at least one item to the cart.",
+            color: "red",
+            timeout: 2000,
+            position: "top",
+          });
+        }
+      } catch (error) {
 
-    console.log("Add to cart", tempItem.uid);
-  } else {
-    $q.notify({
-      message: "You need to add at least one item to the cart.",
-      color: "red",
-      timeout: 2000,
-      position: "top",
-    });
-  }
+      }
+    } else {
+      $q.notify({
+        message: "You need to be logged in to add items to the cart.",
+        color: "red",
+        timeout: 2000,
+        position: "top",
+      });
+      return;
+    }
+  });
+
+
+
 }
 
 onBeforeMount(() => {
