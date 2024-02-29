@@ -7,15 +7,16 @@
     <q-infinite-scroll @load="onLoad" :offset="250">
       <div class="row justify-center">
         <div class="q-px-md q-py-md" v-for="item in items2" :key="item.uid">
-          <q-card class="my-card">
+          <q-card class="my-card" style="min-height: ;">
             <!-- :src="item.data.image" -->
             <img src="https://cdn.quasar.dev/img/mountains.jpg" />
 
             <q-card-section>
-              <div class="text-h6">{{ item.data.name }}</div>
+              <div class="text-h6 name">
+                {{ item.data.name }}</div>
             </q-card-section>
 
-            <q-card-section class="q-pt-none">
+            <q-card-section class="q-pt-none desc">
               {{ item.data.description }}
             </q-card-section>
 
@@ -28,7 +29,7 @@
             <q-card-actions v-if="!admin" style="display: flex; justify-content: space-between">
 
               <q-input dense v-model.number="cartAdd[items2.indexOf(item)]" type="number" :max="item.data.quantity"
-                label="Quantity" input-class="text-right" min="1" style="max-width: 80px" />
+                label="Quantity" input-class="text-right" min="1" style="min-width: 80px" />
 
               <q-btn flat label="Add to Cart" color="primary" @click="addToCart(item)" />
             </q-card-actions>
@@ -37,7 +38,6 @@
               <q-btn @click="Delete(item)" flat label="Delete" color="negative" />
             </q-card-actions>
           </q-card>
-
         </div>
       </div>
     </q-infinite-scroll>
@@ -59,7 +59,7 @@
 
 <script setup>
 import { ref } from "vue"; import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, collection, deleteDoc, getDoc, getDocs, getFirestore, updateDoc, arrayUnion, addDoc, setDoc } from "firebase/firestore";
+import { doc, collection, deleteDoc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
 import { onBeforeMount } from "vue";
 import { userStore } from "stores/user.js";
 import { useQuasar } from "quasar";
@@ -75,7 +75,6 @@ let items2 = ref([]);
 let loadlength = 20;
 let admin = ref(false)
 const $q = useQuasar();
-let dialog = ref(false);
 
 async function getAllItems() {
   querySnapshot.value = await getDocs(collection(db, "items"));
@@ -95,10 +94,12 @@ async function getAllItems() {
 function onLoad(index, done) {
   loadlength += 10;
   items2.value = items.value.slice(0, loadlength);
+  console.log(loadlength);
+  console.log(itemsLength.value);
   if (loadlength >= itemsLength.value) {
-    done(false);
+    done(true);
   }
-  done(true);
+  done(false);
 }
 
 function Delete(item) {
@@ -140,9 +141,6 @@ function addToCart(item) {
         if (cartAdd.value[index] > 0) {
           const docRef = doc(db, "users", uid);
           const docSnap = await getDoc(docRef);
-          // await updateDoc(docRef, {
-          //   cart: { [tempItem.uid]: cartAdd.value[index] },
-          // }, { merge: true })
           await setDoc(docRef, {
             cart: { [tempItem.uid]: cartAdd.value[index] },
           }, { merge: true })
@@ -186,7 +184,28 @@ onBeforeMount(() => {
 });
 </script>
 <style lang="sass" scoped>
+.desc
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.desc:hover
+  cursor: pointer
+  overflow: visible
+  white-space: normal
+
+.name
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.name:hover
+  cursor: pointer
+  overflow: visible
+  white-space: normal
+
 .my-card
   width: 100%
   max-width: 250px
+
 </style>
