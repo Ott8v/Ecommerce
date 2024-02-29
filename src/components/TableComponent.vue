@@ -14,7 +14,7 @@
 </template>
 <script setup>
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { ref, onBeforeMount, computed } from "vue";
+import { ref, onBeforeMount } from "vue";
 const db = getFirestore();
 const querySnapshot = ref(null);
 let rows = ref([]);
