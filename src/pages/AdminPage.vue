@@ -1,12 +1,12 @@
 <template>
   <div class="row">
-    <div class="column q-px-lg">
-      <h3>Hi {{ store.getInfo.nome }} {{ store.getInfo.cognome }},</h3>
-      <p>
-        Welcome to the admin page. Here you can create/delete and update items.
-      </p>
+    <div class="column">
+      <h4>Hi {{ store.getInfo.nome }} {{ store.getInfo.cognome }},</h4>
     </div>
-    <div class="column q-pt-xl q-px-md">
+  </div>
+  <div class="row">
+    <div class="column"></div>
+    <div class="column q-px-md">
       <label>Create Item</label>
       <CreateDash />
     </div>

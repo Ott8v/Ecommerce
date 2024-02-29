@@ -1,7 +1,7 @@
 <template>
-  <div class="q-ma-md">
+  <div>
     <q-table
-      style="height: 600px; min-width: 200px; max-width: 650px; width: 650px"
+      style="height: 530px; min-width: 200px; max-width: 650px; width: 650px"
       flat
       bordered
       title="Items"
