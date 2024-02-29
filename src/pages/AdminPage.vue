@@ -6,7 +6,7 @@
   </div>
   <div class="row">
     <div class="column">
-      <TableComponent title="Users" :columns="columnsUsers" />
+      <TableComponent title="Users" :columns="columnsUsers" :rows="rowsUsers" />
     </div>
     <div class="column q-pl-sm">
       <TableComponent title="Items" :columns="columnsItems" :rows="rowsItems" />
@@ -56,34 +56,54 @@ const columnsItems = ref([
   },
 ]);
 
-const columnsUsers =
-  ref[
-    [
-      {
-        name: "name",
-        label: "name",
-        field: "name",
-        align: "center",
-      },
-    ]
-  ];
+const columnsUsers = ref([
+  {
+    name: "id",
+    label: "Id",
+    field: "id",
+    align: "center",
+  },
+  {
+    name: "name",
+    label: "Name",
+    field: "name",
+    align: "center",
+  },
+  {
+    name: "surname",
+    label: "Surname",
+    field: "surname",
+    align: "center",
+  },
+]);
 
 async function getAllItems() {
   querySnapshotItems.value = await getDocs(collection(db, "items"));
   querySnapshotItems.value.forEach((doc) => {
     let obj = {
       id: doc.id,
-      img: doc.image,
       name: doc.data().name,
+      img: doc.data().image,
       quantity: doc.data().quantity,
       price: doc.data().price,
     };
     rowsItems.value.push(obj);
   });
 }
-async function geatAllUsers() {}
+async function geatAllUsers() {
+  querySnapshotUsers.value = await getDocs(collection(db, "users"));
+  querySnapshotUsers.value.forEach((doc) => {
+    let obj = {
+      id: doc.id,
+      name: doc.data().name,
+      surname: doc.data().surname,
+    };
+    rowsUsers.value.push(obj);
+  });
+}
 
 onBeforeMount(() => {
   getAllItems();
+  geatAllUsers();
 });
 </script>
