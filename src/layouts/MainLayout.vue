@@ -30,11 +30,5 @@ import AccountMenu from "components/AccountMenu.vue";
 import { useRouter } from "vue-router";
 
 const route = useRouter();
-const store = userStore();
 let text = ref('')
-const leftDrawerOpen = ref(false);
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
-const linksList = [];
 </script>

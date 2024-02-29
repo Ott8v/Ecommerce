@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -51,7 +51,6 @@ import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 import { useQuasar } from "quasar";
 import { userStore } from "stores/user.js";
 import { useRouter } from "vue-router";
-import { onBeforeMount } from "vue";
 
 let login = ref(true);
 let name = ref("");
