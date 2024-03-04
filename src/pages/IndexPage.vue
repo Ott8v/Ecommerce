@@ -7,7 +7,7 @@
     <q-infinite-scroll @load="onLoad" :offset="250">
       <div class="row justify-center">
         <div class="q-px-md q-py-md" v-for="item in items2" :key="item.uid">
-          <q-card class="my-card" style="min-height: ;">
+          <q-card class="my-card">
             <!-- :src="item.data.image" -->
             <img src="https://cdn.quasar.dev/img/mountains.jpg" />
 
@@ -95,8 +95,6 @@ async function getAllItems() {
 function onLoad(index, done) {
   loadlength += 10;
   items2.value = items.value.slice(0, loadlength);
-  console.log(loadlength);
-  console.log(itemsLength.value);
   if (loadlength >= itemsLength.value) {
     done(true);
   }
