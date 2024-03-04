@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-table
-      style="height: 530px; min-width: 200px; max-width: 600px; width: 600px"
+      :style="style"
       flat
       bordered
       :title="title"
@@ -15,5 +15,5 @@
   </div>
 </template>
 <script setup>
-defineProps({ title: String, columns: Array, rows: Array });
+defineProps({ title: String, columns: Array, rows: Array, style: Object });
 </script>

@@ -1,15 +1,20 @@
 <template>
-  <div class="row">
-    <div class="column">
-      <h4>Hi {{ store.getInfo.nome }} {{ store.getInfo.cognome }},</h4>
-    </div>
-  </div>
-  <div class="row">
+  <div class="row q-pt-md">
     <div class="column q-pl-sm">
-      <TableComponent title="Users" :columns="columnsUsers" :rows="rowsUsers" />
+      <TableComponent
+        title="Users"
+        :columns="columnsUsers"
+        :rows="rowsUsers"
+        :style="styleUsers"
+      />
     </div>
     <div class="column q-pl-sm">
-      <TableComponent title="Items" :columns="columnsItems" :rows="rowsItems" />
+      <TableComponent
+        title="Items"
+        :columns="columnsItems"
+        :rows="rowsItems"
+        :style="styleItems"
+      />
     </div>
     <div class="column q-pl-sm q-pt-sm">
       <CreateDash />
@@ -28,6 +33,20 @@ const querySnapshotItems = ref(null);
 const querySnapshotUsers = ref(null);
 let rowsItems = ref([]);
 let rowsUsers = ref([]);
+
+const styleItems = ref({
+  height: "530px",
+  minWidth: "200px",
+  maxWidth: "800px",
+  width: "700px",
+});
+
+const styleUsers = ref({
+  height: "530px",
+  minWidth: "200px",
+  maxWidth: "800px",
+  width: "700px",
+});
 
 const columnsItems = ref([
   {
