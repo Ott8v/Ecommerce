@@ -1,14 +1,6 @@
 <template>
-  <div class="row q-pt-md">
-    <div class="column q-pl-sm">
-      <TableComponent
-        title="Users"
-        :columns="columnsUsers"
-        :rows="rowsUsers"
-        :style="styleUsers"
-      />
-    </div>
-    <div class="column q-pl-sm">
+  <div class="row q-pt-md items-center">
+    <div class="col-grow q-pl-sm items-center">
       <TableComponent
         title="Items"
         :columns="columnsItems"
@@ -16,7 +8,15 @@
         :style="styleItems"
       />
     </div>
-    <div class="column q-pl-sm q-pt-sm">
+    <div class="col-grow q-pl-sm items-center">
+      <TableComponent
+        title="Users"
+        :columns="columnsUsers"
+        :rows="rowsUsers"
+        :style="styleUsers"
+      />
+    </div>
+    <div class="col-grow q-pl-sm items-center">
       <CreateDash />
     </div>
   </div>
@@ -37,15 +37,11 @@ let rowsUsers = ref([]);
 const styleItems = ref({
   height: "530px",
   minWidth: "200px",
-  maxWidth: "800px",
-  width: "700px",
 });
 
 const styleUsers = ref({
   height: "530px",
   minWidth: "200px",
-  maxWidth: "800px",
-  width: "700px",
 });
 
 const columnsItems = ref([
