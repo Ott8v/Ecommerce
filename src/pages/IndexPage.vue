@@ -3,7 +3,8 @@
     <q-spinner-bars size="100px" color="primary" />
   </q-page>
 
-  <q-page style="min-height: 900px !important; max-height: 900px !important;" padding v-if="itemsLength > 0 && !loading">
+  <q-page style="min-height: 900px !important; max-height: 900px !important;" padding
+    v-if="itemsLength > 0 && !loading">
     <q-infinite-scroll @load="onLoad" :offset="250">
       <div class="row justify-center">
         <div class="q-px-md q-py-md" v-for="item in items2" :key="item.uid">
@@ -29,7 +30,7 @@
             <q-card-actions v-if="!admin" style="display: flex; justify-content: space-between">
 
               <q-input dense v-model.number="cartAdd[items2.indexOf(item)]" type="number" :max="item.data.quantity"
-                label="Quantity" input-class="text-right" min="1" style="min-width: 80px" />
+                label="Quantity" input-class="text-right" min="1" style="max-width: 80px;min-width: 80px" />
 
               <q-btn flat label="Add to Cart" color="primary" @click="addToCart(item)" />
             </q-card-actions>
@@ -182,6 +183,7 @@ onBeforeMount(() => {
   getAllItems();
 });
 </script>
+
 <style lang="sass" scoped>
 .desc
   white-space: nowrap

@@ -11,8 +11,7 @@
           </template>
         </q-input>
 
-        <q-icon class="fas fa-cart-shopping q-mx-lg" @click="route.push({ name: 'cart' })" style="cursor: pointer;"
-          size="20px" />
+        <q-icon class="fas fa-cart-shopping q-mx-lg" @click="cart()" style="cursor: pointer;" size="20px" />
         <AccountMenu />
       </q-toolbar>
     </q-header>
@@ -28,7 +27,23 @@ import { ref } from "vue";
 import { userStore } from "stores/user.js";
 import AccountMenu from "components/AccountMenu.vue";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 const route = useRouter();
+const store = userStore();
+const $q = useQuasar();
 let text = ref('')
+
+function cart() {
+  if (store.isLogged) {
+    route.push({ name: 'cart' })
+  } else {
+    $q.notify({
+      message: "You need to be logged in to view your cart",
+      color: "red",
+      timeout: 2000,
+      position: "top",
+    });
+  }
+}
 </script>
