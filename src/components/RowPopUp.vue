@@ -17,7 +17,6 @@
 </template>
 <script setup>
 defineProps({
-  dialog: Boolean,
   obj: Object,
 });
 </script>

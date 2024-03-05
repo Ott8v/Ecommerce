@@ -122,12 +122,8 @@ async function geatAllUsers() {
 
 function popUp(row, index) {
   if (dialog.value == true) {
-    console.log("Hello");
     dialog.value = false;
   }
-
-  console.log(row);
-  console.log(index);
   dialog.value = true;
   content.value = row;
 }
