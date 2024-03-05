@@ -21,21 +21,30 @@
       <CreateDash />
     </div>
   </div>
-  <RowPopUp v-model="dialog" :obj="content" />
+  <RowPopUp v-model="dialog" :obj="content" :dl="deleteItem" />
 </template>
+
 <script setup>
 import CreateDash from "../components/CreateDash.vue";
 import TableComponent from "../components/TableComponent.vue";
 import RowPopUp from "src/components/RowPopUp.vue";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  deleteDoc,
+} from "firebase/firestore";
 import { ref, onBeforeMount } from "vue";
+import { useQuasar } from "quasar";
 const db = getFirestore();
+const $q = useQuasar();
 const querySnapshotItems = ref(null);
 const querySnapshotUsers = ref(null);
 let rowsItems = ref([]);
 let rowsUsers = ref([]);
 let dialog = ref(false);
 let content = ref({});
+let ind = ref({});
 
 const styleItems = ref({
   height: "530px",
@@ -126,6 +135,24 @@ function popUp(row, index) {
   }
   dialog.value = true;
   content.value = row;
+  ind.value = index;
+}
+
+async function deleteItem() {
+  try {
+    await deleteDoc(doc(db, "items", content.value.id));
+    $q.notify({
+      color: "green-4",
+      textColor: "white",
+      icon: "cloud_done",
+      message: "Item deleted",
+    });
+  } catch (err) {
+    $q.notify({
+      type: "negative",
+      message: "An error occured when deleting item",
+    });
+  }
 }
 
 onBeforeMount(() => {
