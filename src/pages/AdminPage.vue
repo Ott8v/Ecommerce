@@ -6,6 +6,7 @@
         :columns="columnsItems"
         :rows="rowsItems"
         :style="styleItems"
+        :clickRow="popUp"
       />
     </div>
     <div class="col-grow q-pl-sm items-center">
@@ -20,19 +21,21 @@
       <CreateDash />
     </div>
   </div>
+  <RowPopUp v-model="dialog" :obj="content" />
 </template>
 <script setup>
 import CreateDash from "../components/CreateDash.vue";
 import TableComponent from "../components/TableComponent.vue";
-import { userStore } from "../stores/user.js";
+import RowPopUp from "src/components/RowPopUp.vue";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { ref, onBeforeMount } from "vue";
-const store = userStore();
 const db = getFirestore();
 const querySnapshotItems = ref(null);
 const querySnapshotUsers = ref(null);
 let rowsItems = ref([]);
 let rowsUsers = ref([]);
+let dialog = ref(false);
+let content = ref({});
 
 const styleItems = ref({
   height: "530px",
@@ -115,6 +118,18 @@ async function geatAllUsers() {
     };
     rowsUsers.value.push(obj);
   });
+}
+
+function popUp(row, index) {
+  if (dialog.value == true) {
+    console.log("Hello");
+    dialog.value = false;
+  }
+
+  console.log(row);
+  console.log(index);
+  dialog.value = true;
+  content.value = row;
 }
 
 onBeforeMount(() => {
