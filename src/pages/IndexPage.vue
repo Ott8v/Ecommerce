@@ -140,7 +140,6 @@ function addToCart(item) {
 
         if (cartAdd.value[index] > 0) {
           const docRef = doc(db, "users", uid);
-          const docSnap = await getDoc(docRef);
           await setDoc(docRef, {
             cart: { [tempItem.uid]: cartAdd.value[index] },
           }, { merge: true })
