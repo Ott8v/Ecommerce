@@ -59,16 +59,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, onBeforeMount, ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, collection, deleteDoc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
-import { onBeforeMount } from "vue";
 import { userStore } from "stores/user.js";
 import { useQuasar } from "quasar";
 
 const store = userStore();
 const db = getFirestore();
 const querySnapshot = ref(null);
+const querySnapshot2 = ref(null);
 const itemsLength = ref(0);
 let items = ref([]);
 let loading = ref(true);
@@ -78,10 +78,16 @@ let loadlength = 20;
 let admin = ref(false)
 const $q = useQuasar();
 
+let cartItems = ref([])
+let itemkeys = ref([]);
+const keys = ref([])
+
 async function getAllItems() {
   querySnapshot.value = await getDocs(collection(db, "items"));
   itemsLength.value = querySnapshot.value.size;
   cartAdd.value = new Array(itemsLength.value);
+
+
   querySnapshot.value.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // doc.id is the uid of the document - doc.data() is the data (obj) of the document
@@ -89,7 +95,26 @@ async function getAllItems() {
   });
 
   items2.value = items.value.slice(0, loadlength);
+  const auth = getAuth();
+  onAuthStateChanged(auth, async (user) => {
+    try {
+      const uid = user.uid;
+      const docRef = doc(db, "users", uid);
+      const docSnap = ref(null);
+      docSnap.value = await getDoc(docRef);
 
+
+      cartItems.value = docSnap.value.data().cart
+      itemkeys.value = Object.keys(docSnap.value.data().cart)
+      keys.value = JSON.parse(JSON.stringify(itemkeys.value))
+      keys.value.forEach((key) => {
+        const index = items2.value.findIndex((item) => item.uid === key)
+        cartAdd.value[index] = cartItems.value[key]
+      })
+    } catch (error) {
+
+    }
+  })
   loading.value = false;
 }
 
@@ -179,8 +204,12 @@ onBeforeMount(() => {
   if (store.userRole === 'admin') {
     admin.value = true;
   }
+  items.value = [];
+  items2.value = [];
   getAllItems();
 });
+
+
 </script>
 
 <style lang="sass" scoped>

@@ -61,53 +61,18 @@
             <q-input type="number" v-model="CardCVV" label="CVV" max="999" />
           </div>
         </q-card-section>
+
         <q-card-actions class="column flex justify-center">
+          <q-card-section class="column flex justify-center">
+            <div class="text-h8 text-right">SubTotal: €{{ price - 2.35 }}</div>
+            <div class="q-pt-sm text-h8 text-right">Shipping: €2.35</div>
+          </q-card-section>
+          <div class="text-h8 text-right">Total (Tax Included): {{ price }}</div>
+          <q-separator class="q-mb-sm full-width" color="black" />
 
           <q-btn class="flex items-center" label="Proceed to Payment" color="primary" @click="proceedToPayment" />
         </q-card-actions>
       </q-card>
-      <!--
-          TODO:
-          Risultato voluto -> <img src='../assets/image.png' />
-          Tabella dove mostra i prodotti aggiunti al carrello (immagine, nome, quantita e prezzo)
-          dove sara possibile modificare la quantita e rimuovere il prodotto
-
-          Sotto la tabella, mostrare una card dove mostrare totale complessivo (costo items + costo spedizione) e bottone per procedere al pagamento
-
-
-          Da vedere se: Tenere prezzo per 1 item o complessivo (per singolo prodotto)
-                        Scegliere modalita di pagamento (non cambia niente), e dati carta (nome,numero,scadenza,cvv)
-        -->
-
-
-      <!-- :src="item.data.image" -->
-      <!-- <q-card class="my-card">
-          <img src="https://cdn.quasar.dev/img/mountains.jpg" />
-
-          <q-card-section>
-            <div class="text-h6 name">
-              {{ item.data.name }}
-            </div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none desc">
-            {{ item.data.description }}
-          </q-card-section>
-
-          <q-separator />
-          <q-card-section style="display: flex; justify-content: space-between">
-            <q-input dense v-model.number="cartItems[item.uid]" type="number" :max="item.data.quantity" label="Quantity"
-              input-class="text-right" min="1" style="max-width: 80px;min-width: 80px" /> -->
-      <!-- <div class="text-subtitle2">Quantity: {{ cartItems[item.uid] }}</div> -->
-      <!-- </q-card-section>
-          <q-separator />
-          <q-card-actions style="display: flex; justify-content: space-between">
-
-
-
-            <q-btn flat label="Add to Cart" color="primary" @click="addToCart(item)" />
-          </q-card-actions>
-        </q-card> -->
     </div>
   </q-page>
   <q-page v-else-if="numItems < 1 && !loading" class="flex flex-center">
@@ -125,7 +90,7 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { query, where, doc, getDoc, getDocs, getFirestore, collection, documentId, updateDoc, deleteField } from "firebase/firestore";
+import { query, where, doc, getDoc, getDocs, getFirestore, collection, documentId, updateDoc, deleteField, FieldValue, increment } from "firebase/firestore";
 import { userStore } from "stores/user.js";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
@@ -159,6 +124,7 @@ let CardNumber = ref(null)
 let CardExp = ref(null)
 let CardCVV = ref(null)
 const $q = useQuasar();
+const price = ref(0)
 
 function proceedToPayment() {
   if (paymentMethod.value === null || CardName.value === null || CardNumber.value === null || CardExp.value === null || CardCVV.value === null) {
@@ -187,14 +153,30 @@ function proceedToPayment() {
       onAuthStateChanged(auth, async (user) => {
         const uid = user.uid;
         const docRef = doc(db, "users", uid);
-        await updateDoc(docRef, {
-          cart: {}
-        })
+        try {
+          await updateDoc(docRef, {
+            cart: {}
+          })
 
-        items.value = []
+          Object.keys(cartItems.value).forEach(async key => {
+            const index = items.value.findIndex(item => item.uid === key);
+            const value = JSON.parse(JSON.stringify(items.value[index]))
+            const num = value.data.quantity - cartItems.value[key]
+            const docRef2 = doc(db, "items", key);
+            await updateDoc(docRef2, {
+              quantity: num
+            })
+          })
+
+          setTimeout(() => {
+            items.value = []
+            route.push({ name: "home" });
+          }, 2000);
+        } catch (error) {
+
+        }
+
       })
-
-      route.push({ name: "home" });
     })
 
 
@@ -240,7 +222,6 @@ onBeforeMount(() => {
 
 
         //TODO: get cart items and do the cart
-        docSnap.value.data().cart
         cartItems.value = docSnap.value.data().cart
         itemkeys.value = Object.keys(docSnap.value.data().cart)
         numItems.value = itemkeys.value.length
@@ -255,27 +236,9 @@ onBeforeMount(() => {
         querySnapshot.value.forEach((doc) => {
           items.value.push({ uid: doc.id, data: doc.data() });
         })
-        // query('items', where(db.firestore.FieldPath.documentId(), "in", itemkeys.value)).get().then((querySnapshot) => {
-        //   querySnapshot.forEach((doc) => {
-        //     console.log(doc.id, " => ", doc.data());
-        //   });
-        // });
-        // db.collection('items').where(firebase.firestore.FieldPath.documentId(), "in", itemkeys.value).get().then((querySnapshot) => {
-        //   querySnapshot.forEach((doc) => {
-        //     console.log(doc.id, " => ", doc.data());
-        //   });
-        // });
 
-
-        // itemkeys.value.forEach(async (item) => {
-        //   querySnapshot.value = await getDoc(doc(db, "items", item))
-        //   console.log(querySnapshot.value)
-        // })
-        // querySnapshot.value.forEach((doc) => {
-        //   console.log(doc.data())
-        // })
-        // console.log(querySnapshot.value)
-
+        price.value = items.value.reduce((total, item) => total + item.data.price, 0).toFixed(2);
+        price.value = (parseFloat(price.value) + 2.35).toFixed(2)
         loading.value = false
       } catch (error) {
         console.log(error)
